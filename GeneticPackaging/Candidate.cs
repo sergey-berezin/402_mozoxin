@@ -49,7 +49,7 @@
         public void CalculateMetric()
         {
             int[] max = { 0, 0 };
-            int[] min = { 9 + FIGURES_SIZES.Max(), 9 + FIGURES_SIZES.Max() };
+            int[] min = { FIELD_MAX + FIGURES_SIZES.Max(), FIELD_MAX + FIGURES_SIZES.Max() };
 
             for (int i = 0; i < gens.Length; i++)
             {

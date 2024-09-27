@@ -85,5 +85,18 @@ namespace GenericPackagingTests
             solution.TestIntersection().Should().BeFalse();
         }
 
+        [Fact]
+        public void InterceptionTest7()
+        {
+            Candidate solution = new Candidate();
+            solution.gens = new int[][] { new int[] { 13, 13 },
+                                          new int[] { 12, 14 },
+                                          new int[] { 15, 12 },
+                                          new int[] { 16, 15 },
+                                          new int[] { 16, 12 } };
+
+            solution.TestIntersection().Should().BeTrue();
+        }
+
     }
 }

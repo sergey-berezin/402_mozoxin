@@ -91,6 +91,8 @@ namespace GeneticPackaging
                 gens[random.Next(0, 5)][random.Next(0, 2)] += add;
                 population.Add(new Candidate(gens));
             }
+
+            population.RemoveAll(cand => cand.TestIntersection() == true);
         }
 
         public void CalculateMetric()
@@ -111,8 +113,6 @@ namespace GeneticPackaging
         public void NextIteration()
         {
             List<Candidate> newPopulation = new List<Candidate>();
-
-            population.RemoveAll(cand => cand.TestIntersection() == true);
 
             newPopulation = population.OrderBy(o => o.metric).ToList();
 

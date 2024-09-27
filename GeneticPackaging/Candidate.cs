@@ -5,10 +5,10 @@
         public int[][] gens { get; set; }
         public int metric { get; set; }
 
-        static int FIGURES_AMOUNT = 5;
-        static int[] FIGURES_SIZES = { 3, 2, 2, 1, 1 };
-        static int FIELD_MIN = 0;
-        static int FIELD_MAX = 10;
+        public static int FIGURES_AMOUNT = 5;
+        public static int[] FIGURES_SIZES = { 3, 2, 2, 1, 1 };
+        public static int FIELD_MIN = 0;
+        public static int FIELD_MAX = 100;
 
         public Candidate()
         {
@@ -19,6 +19,11 @@
             {
                 gens[i] = new int[] { random.Next(FIELD_MIN, FIELD_MAX), random.Next(FIELD_MIN, FIELD_MAX)};
             }
+        }
+
+        public Candidate(int[][] gens)
+        {
+            this.gens = (int[][]) gens.Clone();
         }
 
         public Candidate(Candidate mother, Candidate father)

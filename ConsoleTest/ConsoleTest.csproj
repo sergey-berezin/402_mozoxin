@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -6,7 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-	<ItemGroup>
-		<ProjectReference Include="..\GeneticPackaging\GeneticPackaging.csproj" />
-	</ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="GeneticPackaging" Version="1.0.0" />
+  </ItemGroup>
 </Project>

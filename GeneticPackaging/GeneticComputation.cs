@@ -21,7 +21,7 @@ namespace GeneticPackaging
             this.bestSize = bestSize;
             population = new List<Candidate>();
 
-            for (int i = 0; i < this.populationSize; i++)
+            for (int i = 0; i < this.bestSize; i++)
             {
                 Candidate candidate = new Candidate();
                 while (candidate.TestIntersection())
@@ -42,8 +42,6 @@ namespace GeneticPackaging
                 return;
             }
 
-            List<Candidate> newPopulation = new List<Candidate>();
-
             for (int i = 0; i < populationSize; i++)
             {
                 Candidate candidate = new Candidate();
@@ -61,10 +59,8 @@ namespace GeneticPackaging
                     candidate = new Candidate(population[first], population[second]);
                     created = true;
                 }
-                newPopulation.Add(candidate);
+                population.Add(candidate);
             }
-
-            population = newPopulation;
         }
 
         public void Mutate()
@@ -72,10 +68,10 @@ namespace GeneticPackaging
             int[] indexes = new int[mutationSize];
             for (int i = 0; i < mutationSize; i++) 
             {
-                int index = random.Next(0, populationSize);
+                int index = random.Next(0, population.Count);
                 while (indexes.Contains(index))
                 {
-                    index = random.Next(0, populationSize);
+                    index = random.Next(0, population.Count);
                 }
                 indexes[i] = index;
             }
@@ -87,7 +83,13 @@ namespace GeneticPackaging
                     add = 1;
                 else
                     add = -1;
-                population[i].gens[random.Next(0, 5)][random.Next(0, 2)] += add;
+                int[][] gens = new int[population[i].gens.Length][];
+                for (int j = 0; j < gens.Length; j++)
+                {
+                    gens[j] = (int[]) population[i].gens[j].Clone();
+                }
+                gens[random.Next(0, 5)][random.Next(0, 2)] += add;
+                population.Add(new Candidate(gens));
             }
         }
 
@@ -108,49 +110,13 @@ namespace GeneticPackaging
 
         public void NextIteration()
         {
-            double metricSum = 0;
             List<Candidate> newPopulation = new List<Candidate>();
 
-            for (int i = 0; i < population.Count; i++)
-            {
-                if (population[i].TestIntersection())
-                {
-                    population.RemoveAt(i);
-                    i--;
-                    continue;
-                }
-                metricSum += (double) 1 / population[i].metric;
-            }
+            population.RemoveAll(cand => cand.TestIntersection() == true);
 
-            List<double> probabilities = new List<double>();
+            newPopulation = population.OrderBy(o => o.metric).ToList();
 
-            foreach (Candidate candidate in population)
-            {
-                probabilities.Add((double) 1 / candidate.metric / metricSum);
-            }
-
-            double interval = 1;
-
-            for (int i = 0; i < bestSize; i++)
-            {
-                double p = random.NextDouble() * interval;
-                double s = 0;
-
-                for (int j = 0; j < probabilities.Count; j++)
-                {
-                    s += probabilities[j];
-                    if (s > p)
-                    {
-                        newPopulation.Add(population[j]);
-                        interval = (metricSum - 1 / population[j].metric) / metricSum;
-                        metricSum -= 1 / population[j].metric;
-                        probabilities.RemoveAt(j);
-                        break;
-                    }
-                }
-            }
-
-            population = newPopulation;
+            population = newPopulation.GetRange(0, bestSize);
             iterationsCompleted++;
         }
         

@@ -13,20 +13,27 @@ namespace GeneticPackaging
 
         private Random random;
 
-        public GeneticComputation(int populationSize, int mutationSize, int bestSize)
+        public int FIGURES_AMOUNT;
+        public int[] FIGURES_SIZES;
+        
+        public GeneticComputation(int populationSize, int mutationSize, int bestSize, int figures_amount, int[] figures_sizes)
         {
             iterationsCompleted = 0;
             this.populationSize = populationSize;
             this.mutationSize = mutationSize;
             this.bestSize = bestSize;
+
+            FIGURES_AMOUNT = figures_amount;
+            FIGURES_SIZES = figures_sizes;
+
             population = new List<Candidate>();
 
             for (int i = 0; i < this.bestSize; i++)
             {
-                Candidate candidate = new Candidate();
+                Candidate candidate = new Candidate(this);
                 while (candidate.TestIntersection())
                 {
-                    candidate = new Candidate();
+                    candidate = new Candidate(this);
                 }
                 population.Add(candidate);
             }
@@ -44,7 +51,7 @@ namespace GeneticPackaging
 
             for (int i = 0; i < populationSize; i++)
             {
-                Candidate candidate = new Candidate();
+                Candidate candidate = new Candidate(this);
                 bool created = false;
 
                 while (!created || candidate.TestIntersection())
@@ -56,7 +63,7 @@ namespace GeneticPackaging
                         second = random.Next(0, population.Count);
                     }
 
-                    candidate = new Candidate(population[first], population[second]);
+                    candidate = new Candidate(this, population[first], population[second]);
                     created = true;
                 }
                 population.Add(candidate);
@@ -89,7 +96,7 @@ namespace GeneticPackaging
                     gens[j] = (int[]) population[i].gens[j].Clone();
                 }
                 gens[random.Next(0, 5)][random.Next(0, 2)] += add;
-                population.Add(new Candidate(gens));
+                population.Add(new Candidate(this, gens));
             }
 
             population.RemoveAll(cand => cand.TestIntersection() == true);

@@ -5,20 +5,22 @@ namespace ConsoleTest
 {
     class MainClass
     {
-        static Candidate best = new Candidate();
+        static Candidate best;
         static int bestMetric = -1;
         static bool working = true;
         static bool stop = false;
 
+        static int FIGURES_AMOUNT = 5;
+        static int[] FIGURES_SIZES = { 3, 2, 2, 1, 1 };
+
         static void Main(string[] args)
         {
-            GeneticComputation computation = new GeneticComputation(100, 2, 500);
+            
+            GeneticComputation computation = new GeneticComputation(100, 1, 500, FIGURES_AMOUNT, FIGURES_SIZES);
 
             computation.CalculateMetric();
             Console.WriteLine(computation.bestSolution.metric);
             computation.NextIteration();
-
-            ConsoleKeyInfo cki;
 
             int i = 0;
 
@@ -54,7 +56,7 @@ namespace ConsoleTest
             for (int i = 0; i < best.gens.Length; i++)
             {
                 Console.WriteLine("(" + best.gens[i][0] + "," + best.gens[i][1] 
-                                 + ") - квадрат со стороной " + Candidate.FIGURES_SIZES[i]);
+                                 + ") - квадрат со стороной " + FIGURES_SIZES[i]);
             }
             stop = true;
         }

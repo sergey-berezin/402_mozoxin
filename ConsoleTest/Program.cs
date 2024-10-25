@@ -13,12 +13,13 @@ namespace ConsoleTest
         static int FIGURES_AMOUNT = 5;
         static int[] FIGURES_SIZES = { 3, 2, 2, 1, 1 };
 
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            
-            GeneticComputation computation = new GeneticComputation(100, 1, 500, FIGURES_AMOUNT, FIGURES_SIZES);
+            CancellationTokenSource ctf = new CancellationTokenSource();
 
-            computation.CalculateMetric();
+            GeneticComputation computation = new GeneticComputation(100, 1, 500, FIGURES_AMOUNT, FIGURES_SIZES, ctf.Token);
+
+            await computation.CalculateMetric();
             Console.WriteLine(computation.bestSolution.metric);
             computation.NextIteration();
 
@@ -28,9 +29,9 @@ namespace ConsoleTest
 
             while (working)
             {
-                computation.ReproducePopulation();
-                computation.Mutate();
-                computation.CalculateMetric();
+                await computation.ReproducePopulation();
+                await computation.Mutate();
+                await computation.CalculateMetric();
                 Console.WriteLine("Итерация " + i + ". Метрика наилучшего экземпляра: " + computation.bestSolution.metric);
                 if (bestMetric == -1 || bestMetric > computation.bestSolution.metric)
                 {

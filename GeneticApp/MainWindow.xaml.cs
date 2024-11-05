@@ -49,7 +49,7 @@ namespace GeneticApp
             Start_Button.IsEnabled = false;
             working = true;
             bestMetric = -1;
-            Solution_Canvas.Children.Clear();
+            
             Stop_Button.IsEnabled = true;
 
             string[] sizes = figuresSizesText.Split(", ");
@@ -62,7 +62,7 @@ namespace GeneticApp
 
             CancellationTokenSource ctf = new CancellationTokenSource();
 
-            GeneticComputation result = await Task.Run(async () =>
+            Task<GeneticComputation> result_task = await Task.Factory.StartNew(async () =>
             {
                 ctf.Token.ThrowIfCancellationRequested();
                 GeneticComputation computation = new GeneticComputation(childrenSize, mutationSize, populationSize, sizes.Length, figuresSizes, ctf.Token);
@@ -84,7 +84,40 @@ namespace GeneticApp
 
                         await Dispatcher.BeginInvoke(new Action(() =>
                         {
+                            Solution_Canvas.Children.Clear();
                             Metric_TextBlock.Text = "Метрика лучшего результата: " + bestMetric;
+
+                            var bestSolution = computation.bestSolution;
+
+                            var bounds = bestSolution.CalculateBounds();
+
+                            double sizeX = Math.Abs(bounds[0][0] - bounds[1][0]);
+                            double sizeY = Math.Abs(bounds[0][1] - bounds[1][1]);
+                            if (sizeX > sizeY)
+                            {
+                                sizeY = sizeX;
+                            }
+                            else
+                            {
+                                sizeX = sizeY;
+                            }
+                            var height = Canvas_Grid.ActualHeight;
+                            var width = Canvas_Grid.ActualWidth;
+
+                            for (int i = 0; i < computation.FIGURES_AMOUNT; i++)
+                            {
+                                var rectangle = new System.Windows.Shapes.Rectangle
+                                {
+                                    Height = computation.FIGURES_SIZES[i] / sizeY * height,
+                                    Width = computation.FIGURES_SIZES[i] / sizeX * width
+                                };
+                                Canvas.SetLeft(rectangle, (bestSolution.gens[i][0] - bounds[0][0]) / sizeX * width);
+                                Canvas.SetTop(rectangle, (bestSolution.gens[i][1] - bounds[0][1]) / sizeY * height);
+
+                                rectangle.Fill = new SolidColorBrush(Colors.Black);
+                                rectangle.Stroke = new SolidColorBrush(Colors.Red);
+                                Solution_Canvas.Children.Add(rectangle);
+                            }
                         }));
                     }
 
@@ -96,40 +129,8 @@ namespace GeneticApp
                 return computation;
             }, ctf.Token);
 
+            var result = await result_task;
             Start_Button.IsEnabled = true;
-            Solution_Canvas.Visibility = Visibility.Visible;
-            var bestSolution = result.bestSolution;
-
-            var bounds = bestSolution.CalculateBounds();
-
-            double sizeX = Math.Abs(bounds[0][0] - bounds[1][0]);
-            double sizeY = Math.Abs(bounds[0][1] - bounds[1][1]);
-            if (sizeX > sizeY)
-            {
-                sizeY = sizeX;
-            } 
-            else
-            {
-                sizeX = sizeY;
-            }
-            var height = Canvas_Grid.ActualHeight;
-            var width = Canvas_Grid.ActualWidth;
-
-            for (int i = 0; i < result.FIGURES_AMOUNT; i++)
-            {
-                var rectangle = new System.Windows.Shapes.Rectangle
-                {
-                    Height = result.FIGURES_SIZES[i] / sizeY * height,
-                    Width = result.FIGURES_SIZES[i] / sizeX * width
-                };
-                Canvas.SetLeft(rectangle, (bestSolution.gens[i][0] - bounds[0][0]) / sizeX * width);
-                Canvas.SetTop(rectangle, (bestSolution.gens[i][1] - bounds[0][1]) / sizeY * height);
-
-                rectangle.Fill = new SolidColorBrush(Colors.Black);
-                rectangle.Stroke = new SolidColorBrush(Colors.Red);
-                Solution_Canvas.Children.Add(rectangle);
-            }
-
 
         }
 

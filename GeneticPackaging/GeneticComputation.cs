@@ -41,8 +41,20 @@ namespace GeneticPackaging
             }
 
             random = new Random();
-            this.bestSize = bestSize;
             this.token = token;
+        }
+
+        public GeneticComputation(int iterationsCompleted, int populationSize, int mutationSize, int bestSize, int figures_amount, int[] figures_sizes, List<Candidate> population, CancellationToken token)
+        {
+            this.iterationsCompleted = iterationsCompleted;
+            this.populationSize = populationSize;
+            this.mutationSize = mutationSize;
+            this.bestSize = bestSize;
+            FIGURES_AMOUNT = figures_amount;
+            FIGURES_SIZES = figures_sizes;
+            this.population = population;
+            this.token = token;
+            random = new Random();
         }
 
         public async Task ReproducePopulation()

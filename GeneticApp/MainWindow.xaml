@@ -23,11 +23,15 @@
             <TextBox TextWrapping="Wrap" Text="{Binding figuresSizesText}" Width="120"/>
             <Button x:Name="Start_Button" Content="Запустить расчет" Click="StartCalculation"/>
             <Button x:Name="Stop_Button" Content="Остановить расчет" Click="StopCalculation"/>
+            <TextBox TextWrapping="Wrap" Text="{Binding experimentName}" Width="120"/>
+            <Button x:Name="Save_Button" Content="Сохранить эксперимент" Click="SaveCalculation"/>
+            <Button x:Name="Load_Button" Content="Загрузить эксперимент" Click="LoadCalculation"/>
         </StackPanel>
         <TextBlock x:Name="Metric_TextBlock" Grid.Column="1" HorizontalAlignment="Center" TextWrapping="Wrap" Text="" VerticalAlignment="Center" FontSize="24"/>
         <Grid x:Name="Canvas_Grid" Grid.Column="1" Grid.Row="1" Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}">
             <Canvas x:Name="Solution_Canvas" />
         </Grid>
+        <ListBox x:Name="Runs_Listbox" Grid.Column="1" Grid.Row="1" ItemsSource="{Binding experiments_names}" Visibility="Collapsed" SelectionChanged="SelectedIndex"/>
 
     </Grid>
 </Window>

@@ -85,20 +85,19 @@
         {
             for (int i = 0; i < context.FIGURES_AMOUNT; i++)
             {
-                if (context.FIGURES_SIZES[i] > 1)
+                
+                for (int j = 0; j < context.FIGURES_AMOUNT; j++)
                 {
-                    for (int j = 0; j < context.FIGURES_AMOUNT; j++)
+                        
+                    if (i != j &&
+                        Math.Max(gens[i][0], gens[j][0]) - Math.Min(gens[i][0] + context.FIGURES_SIZES[i], gens[j][0] + context.FIGURES_SIZES[j]) < 0 &&
+                        Math.Max(gens[i][1], gens[j][1]) - Math.Min(gens[i][1] + context.FIGURES_SIZES[i], gens[j][1] + context.FIGURES_SIZES[j]) < 0)
                     {
-                        
-                        if (i != j &&
-                            Math.Max(gens[i][0], gens[j][0]) - Math.Min(gens[i][0] + context.FIGURES_SIZES[i], gens[j][0] + context.FIGURES_SIZES[j]) < 0 &&
-                            Math.Max(gens[i][1], gens[j][1]) - Math.Min(gens[i][1] + context.FIGURES_SIZES[i], gens[j][1] + context.FIGURES_SIZES[j]) < 0)
-                        {
-                            return true;
-                        }
-                        
+                        return true;
                     }
+                        
                 }
+                
             }
             return false;
         }

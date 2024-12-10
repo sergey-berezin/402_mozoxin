@@ -122,5 +122,19 @@ namespace GenericPackagingTests
             solution.TestIntersection().Should().BeTrue();
         }
 
+        [Fact]
+        public void InterceptionTest9()
+        {
+            GeneticComputation computation = new GeneticComputation(100, 1, 500, FIGURES_AMOUNT, FIGURES_SIZES, new CancellationTokenSource().Token);
+            Candidate solution = new Candidate(computation);
+            solution.gens = new int[][] { new int[] { 45, 40 },
+                                          new int[] { 43, 41 },
+                                          new int[] { 43, 43 },
+                                          new int[] { 43, 40 },
+                                          new int[] { 43, 40 } };
+
+            solution.TestIntersection().Should().BeTrue();
+        }
+
     }
 }

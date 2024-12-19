@@ -1,7 +1,12 @@
+using System.Net;
+using System.Text;
 using System.Xml.Serialization;
 using FluentAssertions;
 
 using GeneticPackaging;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Newtonsoft.Json;
+using Server;
 
 namespace GenericPackagingTests
 {
@@ -137,4 +142,40 @@ namespace GenericPackagingTests
         }
 
     }
+
+    public class ServerTests : IClassFixture<WebApplicationFactory<Program>>
+    {
+        readonly HttpClient _client;
+
+        public ServerTests(WebApplicationFactory<Program> application)
+        {
+            _client = application.CreateClient();
+        }
+
+        [Fact]
+        public async Task TestInitial()
+        {
+            var response = await _client.GetAsync("/initial?childrenSize=1&mutationSize=1&populationSize=1&figuresAmount=1&figuresSizes=1");
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+        }
+
+        [Fact]
+        public async Task TestNext()
+        {
+            var body = new PostBody();
+            body.childrenSize = 0;
+            body.mutationSize = 0;
+            body.populationSize = 0;
+            body.figuresSizes = [1];
+            body.figuresAmount = 1;
+            body.iterationsCompleted = 0;
+            body.population = new List<Creature>();
+
+            var stringContent = new StringContent(JsonConvert.SerializeObject(body), Encoding.UTF8, "application/json");
+            var response = await _client.PostAsync("/next", stringContent);
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+        }
+    }
 }
+
+

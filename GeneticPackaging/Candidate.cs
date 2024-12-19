@@ -5,6 +5,7 @@
         public int[][] gens { get; set; }
         public int metric { get; set; }
         private GeneticComputation context;
+        public int[][] bounds { get; set; }
         private int FIELD_MIN = 0;
         private int FIELD_MAX;
 
@@ -77,7 +78,7 @@
         public void CalculateMetric()
         {
             var res = CalculateBounds();
-
+            bounds = res;
             metric = (res[1][0] - res[0][0]) * (res[1][1] - res[0][1]);
         }
 
